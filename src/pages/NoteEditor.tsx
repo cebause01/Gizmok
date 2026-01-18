@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
-  ArrowLeft, Save, PenTool, Type, Eraser, Trash2, Download, Maximize2, Minimize2,
+  ArrowLeft, Save, PenTool, Type, Eraser, Trash2, Maximize2, Minimize2,
   Undo2, Redo2, Circle, Square, Minus, ArrowRight, Image as ImageIcon, 
   MousePointer2, Bookmark, Share2, Search, Grid
 } from 'lucide-react'
@@ -49,8 +49,8 @@ export default function NoteEditor() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [shapeType, setShapeType] = useState<ShapeType>(null)
   const [shapeStart, setShapeStart] = useState<{ x: number; y: number } | null>(null)
-  const [history, setHistory] = useState<string[]>([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [_history, setHistory] = useState<string[]>([])
+  const [_historyIndex, setHistoryIndex] = useState(-1)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [images, setImages] = useState<CanvasImage[]>([])
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null)
@@ -554,7 +554,7 @@ export default function NoteEditor() {
       const selectedImage = images.find(img => img.id === selectedImageId)
       if (selectedImage) {
         const dx = currentPos.x - lastPos.x
-        const dy = currentPos.y - lastPos.y
+        const _dy = currentPos.y - lastPos.y // Unused - using aspect ratio preservation
         
         let newX = selectedImage.x
         let newY = selectedImage.y
@@ -625,7 +625,7 @@ export default function NoteEditor() {
           ctx.strokeStyle = penColor
           ctx.fillStyle = penColor
           ctx.lineWidth = penWidth
-          ctx.globalAlpha = activeTool === 'highlighter' ? 0.4 : 1.0
+          ctx.globalAlpha = 1.0
           
           const startX = shapeStart.x
           const startY = shapeStart.y
@@ -719,7 +719,7 @@ export default function NoteEditor() {
     }
   }
 
-  const drawAllImagesDirectly = (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => {
+  const drawAllImagesDirectly = (ctx: CanvasRenderingContext2D, _canvasWidth: number, _canvasHeight: number) => {
     // Draw all images - load and draw each one
     images.forEach(imageData => {
       if (!imageData.dataUrl) return
@@ -763,7 +763,6 @@ export default function NoteEditor() {
     if (!canvas) return
     
     const rect = canvas.getBoundingClientRect()
-    const dpr = window.devicePixelRatio || 1
     drawAllImagesDirectly(ctx, rect.width, rect.height)
   }
 
@@ -1152,7 +1151,7 @@ export default function NoteEditor() {
           >
             <Redo2 size={18} />
           </button>
-          <button className="icon-btn" title="Add Page">
+          <button className="icon-btn" onClick={saveNote} title="Save Note">
             <Save size={18} />
           </button>
           <button className="icon-btn" onClick={() => setIsFullscreen(!isFullscreen)} title="Toggle Fullscreen">

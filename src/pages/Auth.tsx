@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Brain, Mail, Lock, User as UserIcon, GraduationCap, Search, ChevronDown, ArrowLeft } from 'lucide-react'
+import { Mail, Lock, User as UserIcon, GraduationCap, Search, ChevronDown, ArrowLeft } from 'lucide-react'
 import { storage, User } from '../utils/storage'
 import './Auth.css'
 
