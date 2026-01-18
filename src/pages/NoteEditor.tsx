@@ -554,7 +554,6 @@ export default function NoteEditor() {
       const selectedImage = images.find(img => img.id === selectedImageId)
       if (selectedImage) {
         const dx = currentPos.x - lastPos.x
-        const _dy = currentPos.y - lastPos.y // Unused - using aspect ratio preservation
         
         let newX = selectedImage.x
         let newY = selectedImage.y
