@@ -1,0 +1,518 @@
+.note-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-primary);
+  animation: fadeIn 0.3s;
+}
+
+.note-editor.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.header-right {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.note-title-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-card);
+}
+
+.note-title-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.note-title-input::placeholder {
+  color: var(--text-muted);
+}
+
+.editor-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.toolbar-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbar-tools {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-right: 1rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 0.25rem;
+}
+
+.shape-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.shape-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.shape-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border);
+}
+
+.shape-btn.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.image-upload-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.icon-btn.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.tool-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tool-btn-icon:hover {
+  background: var(--bg-card-hover);
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+.tool-btn-icon.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.highlighter-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  opacity: 0.6;
+}
+
+.color-palette {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-right: 1rem;
+  border-right: 1px solid var(--border);
+}
+
+.color-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.color-btn.active {
+  border-color: var(--text-primary);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px var(--bg-secondary), 0 0 0 4px var(--accent);
+}
+
+.color-picker-custom {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.pen-size-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 1rem;
+  border-right: 1px solid var(--border);
+}
+
+.pen-size-control label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.width-slider {
+  width: 100px;
+}
+
+.width-indicator {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  min-width: 20px;
+  text-align: center;
+}
+
+.template-selector {
+  display: flex;
+  align-items: center;
+}
+
+.template-selector select {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.template-selector select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.template-selector select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-tertiary);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon-btn:hover {
+  background: var(--bg-card);
+  color: var(--accent);
+}
+
+.editor-container {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--accent-bg);
+}
+
+.canvas-container {
+  flex: 1;
+  background: var(--bg-tertiary);
+  padding: 2rem;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.drawing-canvas {
+  background: #fefefe;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 
+              0 0 0 1px rgba(0, 0, 0, 0.1);
+  cursor: crosshair;
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 250px);
+  touch-action: none;
+  margin: 0 auto;
+  /* iPad optimizations */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.drawing-canvas.moving {
+  cursor: move;
+}
+
+.drawing-canvas.resizing {
+  cursor: nwse-resize;
+}
+
+.text-editor-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.text-editor-panel h3 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.text-editor {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  color: var(--text-primary);
+  background: var(--bg-card);
+}
+
+.text-editor:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.text-editor::placeholder {
+  color: var(--text-muted);
+}
+
+/* iPad optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .editor-header {
+    padding: 1rem 2rem;
+  }
+  
+  .toolbar-top {
+    padding: 1rem 2rem;
+    gap: 1.25rem;
+  }
+  
+  .tool-btn-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .icon-btn {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .canvas-container {
+    padding: 2.5rem;
+  }
+  
+  .drawing-canvas {
+    max-width: 100%;
+    min-height: calc(100vh - 300px);
+  }
+  
+  .color-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .pen-size-control {
+    gap: 1rem;
+  }
+  
+  .width-slider {
+    width: 120px;
+  }
+}
+
+@media (max-width: 767px) {
+  .editor-container {
+    flex-direction: column;
+  }
+
+  .toolbar {
+    flex-direction: row;
+    min-width: auto;
+    overflow-x: auto;
+  }
+
+  .tool-group {
+    flex-direction: row;
+    min-width: fit-content;
+  }
+
+  .text-editor-panel {
+    max-width: 100%;
+  }
+  
+  .editor-header {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  .editor-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .editor-actions button {
+    flex: 1;
+  }
+
+  .drawing-canvas {
+    min-height: 400px;
+  }
+}
