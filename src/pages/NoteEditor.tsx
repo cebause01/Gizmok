@@ -795,29 +795,25 @@ export default function NoteEditor() {
     const canvas = canvasRef.current
     if (!canvas) return
     
-    // Redraw canvas first to include all current state (including images)
-    redrawCanvas()
+    // Capture current canvas state - do NOT call redrawCanvas first as it clears
+    // the canvas and redraws from old history, which would erase the stroke we just drew
+    const dataUrl = canvas.toDataURL()
     
-    // Wait a bit for canvas to update, then save
-    setTimeout(() => {
-      const dataUrl = canvas.toDataURL()
-      
-      // Remove any future history if we're in the middle of history
-      const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1)
-      newHistory.push(dataUrl)
-      
-      // Limit history to 50 states
-      if (newHistory.length > 50) {
-        newHistory.shift()
-      } else {
-        historyIndexRef.current++
-      }
-      
-      historyRef.current = newHistory
-      setHistory(newHistory)
-      setHistoryIndex(historyIndexRef.current)
-    }, 50)
-  }, [redrawCanvas])
+    // Remove any future history if we're in the middle of history
+    const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1)
+    newHistory.push(dataUrl)
+    
+    // Limit history to 50 states
+    if (newHistory.length > 50) {
+      newHistory.shift()
+    } else {
+      historyIndexRef.current++
+    }
+    
+    historyRef.current = newHistory
+    setHistory(newHistory)
+    setHistoryIndex(historyIndexRef.current)
+  }, [])
 
   const undo = useCallback(() => {
     if (historyIndexRef.current > 0) {
