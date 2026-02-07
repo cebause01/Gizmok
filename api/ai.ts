@@ -117,10 +117,13 @@ Example: [{"front":"What is X?","back":"X is..."},{"front":"What is Y?","back":"
   ])
 
   const parsed = parseJsonArray(content || '[]')
-  return parsed.slice(0, count).map((item: { front?: string; back?: string }) => ({
-    front: String(item?.front ?? 'Question'),
-    back: String(item?.back ?? 'Answer'),
-  }))
+  return parsed.slice(0, count).map((item: unknown) => {
+    const i = item as { front?: string; back?: string }
+    return {
+      front: String(i?.front ?? 'Question'),
+      back: String(i?.back ?? 'Answer'),
+    }
+  })
 }
 
 async function generateQuiz(
@@ -149,11 +152,14 @@ Example: [{"question":"What is X?","options":["A","B","C","D"],"correctAnswer":0
   ])
 
   const parsed = parseJsonArray(content || '[]')
-  return parsed.slice(0, count).map((item: { question?: string; options?: string[]; correctAnswer?: number }) => ({
-    question: String(item?.question ?? 'Question'),
-    options: Array.isArray(item?.options) ? item.options.map(String) : ['A', 'B', 'C', 'D'],
-    correctAnswer: typeof item?.correctAnswer === 'number' ? Math.min(3, Math.max(0, item.correctAnswer)) : 0,
-  }))
+  return parsed.slice(0, count).map((item: unknown) => {
+    const i = item as { question?: string; options?: string[]; correctAnswer?: number }
+    return {
+      question: String(i?.question ?? 'Question'),
+      options: Array.isArray(i?.options) ? i.options.map(String) : ['A', 'B', 'C', 'D'],
+      correctAnswer: typeof i?.correctAnswer === 'number' ? Math.min(3, Math.max(0, i.correctAnswer)) : 0,
+    }
+  })
 }
 
 function parseJsonArray(content: string): unknown[] {
