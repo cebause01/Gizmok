@@ -1,24 +1,34 @@
-import Groq from 'groq-sdk'
+import { Groq } from 'groq-sdk'
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-})
+const groq = new Groq()
 
 const MODEL = 'llama-3.1-8b-instant'
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
 export default async function handler(req: Request): Promise<Response> {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders })
+  }
+
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     return new Response(
-      JSON.stringify({ error: 'GROQ_API_KEY is not configured. Add it in Vercel Environment Variables.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({
+        error: 'GROQ_API_KEY is not configured. Add it in Vercel Project Settings → Environment Variables.',
+      }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 
@@ -37,7 +47,7 @@ export default async function handler(req: Request): Promise<Response> {
       const flashcards = await generateFlashcards(text, count)
       return new Response(JSON.stringify(flashcards), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
@@ -45,21 +55,21 @@ export default async function handler(req: Request): Promise<Response> {
       const quiz = await generateQuiz(text, count)
       return new Response(JSON.stringify(quiz), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
     return new Response(
       JSON.stringify({ error: 'Invalid action. Use "flashcards" or "quiz".' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (err) {
     console.error('AI API error:', err)
+    const message =
+      err instanceof Error ? err.message : typeof err === 'object' && err && 'message' in err ? String((err as { message: unknown }).message) : 'Failed to generate content'
     return new Response(
-      JSON.stringify({
-        error: err instanceof Error ? err.message : 'Failed to generate content',
-      }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 }
@@ -83,8 +93,10 @@ Example: [{"front":"What is X?","back":"X is..."},{"front":"What is Y?","back":"
         content: `From this text, create exactly ${count} flashcards. Each flashcard should have a "front" (question) and "back" (answer). Focus on key concepts, definitions, and important facts.\n\nText:\n${truncatedText}`,
       },
     ],
-    temperature: 0.3,
-    max_tokens: 4000,
+    temperature: 1,
+    max_completion_tokens: 1024,
+    top_p: 1,
+    stream: false,
   })
 
   const content = completion.choices[0]?.message?.content?.trim() ?? '[]'
@@ -120,8 +132,10 @@ Example: [{"question":"What is X?","options":["A","B","C","D"],"correctAnswer":0
         content: `From this text, create exactly ${count} multiple-choice questions. Each question must have 4 options. Put the correct answer first or indicate its index in correctAnswer.\n\nText:\n${truncatedText}`,
       },
     ],
-    temperature: 0.3,
-    max_tokens: 4000,
+    temperature: 1,
+    max_completion_tokens: 1024,
+    top_p: 1,
+    stream: false,
   })
 
   const content = completion.choices[0]?.message?.content?.trim() ?? '[]'

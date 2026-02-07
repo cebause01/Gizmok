@@ -13,8 +13,15 @@ async function callAI<T>(action: string, text: string, count: number): Promise<T
   })
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(err.error || 'AI request failed')
+    const text = await res.text()
+    let message = 'AI request failed'
+    try {
+      const err = JSON.parse(text)
+      message = err.error || message
+    } catch {
+      message = text || res.statusText || message
+    }
+    throw new Error(message)
   }
 
   return res.json()
