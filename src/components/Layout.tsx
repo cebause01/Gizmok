@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import './Layout.css'
@@ -9,6 +10,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate()
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleAddDeck = () => {
     navigate('/flashcards')
@@ -16,8 +18,12 @@ export default function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="layout">
-      <Sidebar onAddDeck={handleAddDeck} />
+    <div className={`layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <Sidebar
+        onAddDeck={handleAddDeck}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+      />
       <main className="main-content">
         {children}
       </main>

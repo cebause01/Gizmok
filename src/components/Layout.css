@@ -9,6 +9,11 @@
   margin-left: 260px;
   min-height: 100vh;
   background: var(--bg-primary);
+  transition: margin-left 0.2s ease;
+}
+
+.layout.sidebar-collapsed .main-content {
+  margin-left: 72px;
 }
 
 /* iPad optimizations */
@@ -16,6 +21,10 @@
   .main-content {
     margin-left: 280px;
     padding: 1.5rem;
+  }
+
+  .layout.sidebar-collapsed .main-content {
+    margin-left: 72px;
   }
 }
 

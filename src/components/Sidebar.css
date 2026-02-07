@@ -9,11 +9,90 @@
   left: 0;
   top: 0;
   z-index: 100;
+  transition: width 0.2s ease;
+}
+
+.sidebar.collapsed {
+  width: 72px;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.sidebar.collapsed .nav-item-label {
+  display: none;
+}
+
+.sidebar.collapsed .btn-learn,
+.sidebar.collapsed .btn-add {
+  padding: 0.75rem;
+  justify-content: center;
+}
+
+.sidebar.collapsed .btn-learn-text,
+.sidebar.collapsed .btn-add-text {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-actions {
+  padding: 0.75rem;
+}
+
+.sidebar.collapsed .sidebar-decks-section {
+  display: none;
 }
 
 .sidebar-header {
   padding: 1.25rem;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.sidebar-toggle {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-card);
+  color: var(--accent);
+}
+
+.sidebar.collapsed .sidebar-header {
+  padding: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-logo {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar.collapsed .logo-img {
+  height: 32px;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  margin-top: 0.25rem;
 }
 
 .sidebar-logo {
@@ -92,6 +171,18 @@
   min-height: 44px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-learn .btn-learn-icon {
+  display: none;
+}
+
+.sidebar.collapsed .btn-learn .btn-learn-icon {
+  display: block;
 }
 
 .btn-learn:hover {

@@ -1,14 +1,16 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { BookOpen, TrendingUp, User, Grid, Plus, StickyNote } from 'lucide-react'
+import { BookOpen, TrendingUp, User, Grid, Plus, StickyNote, PanelLeftClose, PanelLeft } from 'lucide-react'
 import { storage } from '../utils/storage'
 import './Sidebar.css'
 
 interface SidebarProps {
   onAddDeck?: () => void
   onLearn?: () => void
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
-export default function Sidebar({ onAddDeck, onLearn }: SidebarProps) {
+export default function Sidebar({ onAddDeck, onLearn, isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const currentUser = storage.getCurrentUser()
@@ -28,58 +30,73 @@ export default function Sidebar({ onAddDeck, onLearn }: SidebarProps) {
   }
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
-        <Link to="/" className="sidebar-logo">
+        <Link to="/" className="sidebar-logo" title={isCollapsed ? 'Gizmok' : undefined}>
           <img src="/logo.png" alt="Gizmok" className="logo-img" />
         </Link>
+        <button
+          type="button"
+          className="sidebar-toggle"
+          onClick={onToggleCollapse}
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {isCollapsed ? <PanelLeft size={20} /> : <PanelLeftClose size={20} />}
+        </button>
       </div>
 
       <nav className="sidebar-nav">
         <Link
           to="/"
           className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}
+          title={isCollapsed ? 'My decks' : undefined}
         >
           <BookOpen size={20} />
-          <span>My decks</span>
+          <span className="nav-item-label">My decks</span>
         </Link>
         <Link
           to="/notes"
           className={`nav-item ${location.pathname.startsWith('/notes') ? 'active' : ''}`}
+          title={isCollapsed ? 'Notes' : undefined}
         >
           <StickyNote size={20} />
-          <span>Notes</span>
+          <span className="nav-item-label">Notes</span>
         </Link>
         <Link
           to="/progress"
           className={`nav-item ${location.pathname === '/progress' ? 'active' : ''}`}
+          title={isCollapsed ? 'Progress' : undefined}
         >
           <TrendingUp size={20} />
-          <span>Progress</span>
+          <span className="nav-item-label">Progress</span>
         </Link>
         <Link
           to="/public-decks"
           className={`nav-item ${location.pathname === '/public-decks' ? 'active' : ''}`}
+          title={isCollapsed ? 'Public decks' : undefined}
         >
           <Grid size={20} />
-          <span>Public decks</span>
+          <span className="nav-item-label">Public decks</span>
         </Link>
         <Link
           to="/profile"
           className={`nav-item ${location.pathname === '/profile' ? 'active' : ''}`}
+          title={isCollapsed ? 'Profile' : undefined}
         >
           <User size={20} />
-          <span>Profile</span>
+          <span className="nav-item-label">Profile</span>
         </Link>
       </nav>
 
       <div className="sidebar-actions">
-        <button className="btn-learn" onClick={onLearn || handleLearn}>
-          Learn
+        <button className="btn-learn" onClick={onLearn || handleLearn} title={isCollapsed ? 'Learn' : undefined}>
+          <BookOpen size={20} className="btn-learn-icon" />
+          <span className="btn-learn-text">Learn</span>
         </button>
-        <button className="btn-add" onClick={onAddDeck}>
+        <button className="btn-add" onClick={onAddDeck} title={isCollapsed ? 'Add' : undefined}>
           <Plus size={20} />
-          Add
+          <span className="btn-add-text">Add</span>
         </button>
       </div>
 
