@@ -7,6 +7,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
+export const config = {
+  runtime: 'nodejs',
+}
+
 export default async function handler(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders })
@@ -18,7 +22,6 @@ export default async function handler(req: Request): Promise<Response> {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
-
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     return new Response(
